@@ -1,49 +1,32 @@
-import http from "http"
-import express, { Request } from "express"
-import { Server } from "socket.io"
-import bodyParser from "body-parser"
+import express from "express"
 import cors from "cors"
-import { io as ioClient } from "socket.io-client"
-import { RootRouter } from "./router"
-
-const PORT = process.env.PORT || 3000
+import { createServer } from "http"
+import { Server } from "socket.io"
+import { telegram } from "./telegram/telegram.methods"
+import telegramRouter from "./telegram/telegram.router"
 
 const app = express()
-export const socketBot = ioClient(process.env.BASE_URL!)
-const httpServer = http.createServer(app)
-
-export const io = new Server(httpServer, {
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
   cors: {
     origin: "*",
-  },
+    methods: ["GET", "POST"]
+  }
 })
-// io.on("connection", (socket) => {
-//   handleSocketEvents(socket)
-// })
 
-app.use(
-  cors({
-    origin: "*",
-  }),
-)
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(
-  express.json({
-    limit: "50mb",
-    verify: function (req: Request, res, buffer) {
-      req.rawBody = buffer
-    },
-  }),
-)
-app.use((err, req, res, next) => {
-  console.error("An error occurred:", err.message)
-  console.error(err.stack)
-  res.status(500).send({ error: "Server error occurred" })
-})
-app.use(RootRouter)
+app.use(cors())
+app.use(express.json())
 
-httpServer.listen(PORT, async () => {
-  console.log(`Server is listening on port ${PORT}`)
+app.use("/telegram", telegramRouter)
+
+httpServer.listen(process.env.PORT || 3000, async () => {
+  console.log(`Server is running on port ${process.env.PORT || 3000}`)
+  try {
+    await telegram.startBot()
+    console.log("Telegram bot started successfully")
+  } catch (error) {
+    console.error("Failed to start Telegram bot:", error)
+  }
 })
 
 process.on("uncaughtException", (err, origin) => {

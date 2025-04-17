@@ -12,8 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@grammyjs/auto-chat-action": "^0.1.1",
     "@hapi/boom": "^10.0.1",
     "@types/hapi__boom": "^7.4.1",
+    "@types/minio": "^7.1.0",
     "@types/qrcode": "^1.5.5",
     "@types/winston": "^2.4.4",
     "@whiskeysockets/baileys": "^6.17.16",
@@ -23,6 +25,8 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "formdata-node": "^6.0.3",
+    "grammy": "^1.36.0",
+    "minio": "^8.0.5",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.7.0",
     "nodemon": "^3.1.9",
@@ -35,6 +39,7 @@
     "socket.io-client": "^4.8.1",
     "stream": "^0.0.3",
     "url": "^0.11.4",
+    "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
