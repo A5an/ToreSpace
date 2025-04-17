@@ -46,21 +46,21 @@ router.post("/webhook-amocrm/:scope_id", async (req, res) => {
   console.log(body, "body")
   // logger.debug("[AMOCRM]: webhook-amocrm body", { body })
 
-  const threadId = body.message.conversation.client_id
-  const text = body.message.message.text
-  const media = body.message.message.media
+  // const threadId = body.message.conversation.client_id
+  // const text = body.message.message.text
+  // const media = body.message.message.media
 
-  const response = await fetch(
-    `${process.env.BASE_API_URL}/api/internal/assistants/channels/amocrm/bots?threadId=${threadId}`,
-    {
-      method: "GET",
-      headers: {
-        "x-api-key": `${process.env.PLEEP_INTERNAL_API_KEY}`,
-      },
-    },
-  )
+  // const response = await fetch(
+  //   `${process.env.BASE_API_URL}/api/internal/assistants/channels/amocrm/bots?threadId=${threadId}`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "x-api-key": `${process.env.PLEEP_INTERNAL_API_KEY}`,
+  //     },
+  //   },
+  // )
 
-  const { thread } = await response.json()
+  // const { thread } = await response.json()
 
   // if (thread?.assistant?.amoBot?.enabled) {
   //   const attachments: string[] = []
