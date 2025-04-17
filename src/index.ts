@@ -4,9 +4,7 @@ import { Server } from "socket.io"
 import bodyParser from "body-parser"
 import cors from "cors"
 import { io as ioClient } from "socket.io-client"
-import { handleSocketEvents } from "./socketsHandler"
 import { RootRouter } from "./router"
-import { whatsapp } from "./whatsapp/whatsapp.methods"
 
 const PORT = process.env.PORT || 3000
 
@@ -46,7 +44,6 @@ app.use(RootRouter)
 
 httpServer.listen(PORT, async () => {
   console.log(`Server is listening on port ${PORT}`)
-  // whatsapp.restartAllSessions();
 })
 
 process.on("uncaughtException", (err, origin) => {
