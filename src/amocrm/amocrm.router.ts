@@ -42,74 +42,26 @@ router.post("/sendMessage", async (req: Request, res: Response) => {
 
 router.post("/webhook-amocrm/:scope_id", async (req, res) => {
   const body = req.body
-
   console.log(body, "body")
-  // logger.debug("[AMOCRM]: webhook-amocrm body", { body })
 
-  // const threadId = body.message.conversation.client_id
-  // const text = body.message.message.text
-  // const media = body.message.message.media
+  // Forward the request to ngrok
+  if (process.env.MODE === "production") {
+    try {
+      const ngrokResponse = await fetch(`${process.env.NGROK_URL}/amocrm/bot/webhook-amocrm/${req.params.scope_id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      })
 
-  // const response = await fetch(
-  //   `${process.env.BASE_API_URL}/api/internal/assistants/channels/amocrm/bots?threadId=${threadId}`,
-  //   {
-  //     method: "GET",
-  //     headers: {
-  //       "x-api-key": `${process.env.PLEEP_INTERNAL_API_KEY}`,
-  //     },
-  //   },
-  // )
-
-  // const { thread } = await response.json()
-
-  // if (thread?.assistant?.amoBot?.enabled) {
-  //   const attachments: string[] = []
-  //   let channelType = "WEB"
-
-  //   if (media) attachments.push(media)
-
-  //   if (thread.telegram) channelType = "TELEGRAM"
-  //   const telegramOBJ = {
-  //     telegramChatId: thread.telegram?.chatId,
-  //     botId: thread.telegram?.telegramBotId,
-  //   }
-
-  //   if (thread.whatsapp) channelType = "WHATSAPP"
-  //   const whatsappOBJ = {
-  //     chatId: thread.whatsapp?.chatId,
-  //     botId: thread.assistantId,
-  //   }
-
-  //   if (thread.waba) channelType = "WABA"
-  //   const wabaOBJ = {
-  //     appId: thread.assistant.wabaBot?.appId,
-  //     appToken: thread.assistant.wabaBot?.appToken,
-  //     number: thread.waba?.number,
-  //   }
-
-  //   if (thread.instagram) channelType = "INSTAGRAM"
-  //   const instagramOBJ = {
-  //     customerId: thread.instagram?.customerId,
-  //     accountId: thread.instagram?.accountId,
-  //   }
-
-  //   socketBot.emit("operatorMessage", {
-  //     message: text,
-  //     attachments,
-  //     socketThreadId: thread.id,
-  //     applicationId: thread.applicationId,
-  //     roomId: thread.threadId,
-  //     telegram: telegramOBJ,
-  //     whatsapp: whatsappOBJ,
-  //     instagram: instagramOBJ,
-  //     waba: wabaOBJ,
-  //     channel: channelType,
-  //   })
-
-  //   // if (thread.messageHandler === "AI" && thread.assistant.application?.settings?.isExternalChannelOperatorSwitch) {
-  //   //   socketBot.emit("changeMessageMode", "OPERATOR", thread.threadId, thread.applicationId)
-  //   // }
-  // }
+      if (!ngrokResponse.ok) {
+        console.error('Failed to forward to ngrok:', await ngrokResponse.text())
+      }
+    } catch (error) {
+      console.error('Error forwarding to ngrok:', error)
+      }
+  }
 
   res.status(200).send("EVENT_RECEIVED")
 })
